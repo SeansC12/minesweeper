@@ -1,0 +1,2 @@
+ROW_COUNT = 5
+MINES_COUNT = 5

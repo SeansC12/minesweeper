@@ -3,16 +3,22 @@ import settings
 
 # TODO: Add class method for win-lose
 # TODO: Code for instantiating the game
-# TODO: Implement solver for 
+# TODO: Implement solver for game   
 
 class Cell:
     all = [] # All cells in the board
-    row_count = 1 # To be changed
+    row_count = settings.ROW_COUNT # To be changed
     cell_count = (settings.ROW_COUNT) ** 2
-    def __init__(self, row, row_index, is_mine=False):
+    isWin = False
+    isLose = False
+    wins = 0
+    losses = 0
+    currentIteration = 1
+    def __init__(self, row, row_index, is_mine=False, unsafe_revealed=False):
         self.is_mine = is_mine
         self.is_opened = False
         self.flagged = False
+        self.unsafe_revealed = unsafe_revealed # Boolean value to decide when the game is lost
         self.row = row # Row in board, from 0 to n
         self.row_index = row_index # Triangle number in the row, from left to right
 
@@ -40,12 +46,14 @@ class Cell:
         cells = [] # List of neighbours
         for x in within_row_index:
             for y in across_row_index:
-                cells.append(self.get_cell_by_axis(self.row_index - x, self.row - y)) # Appends list of neighbours with coordinates (row, row_index) of neighbours
-
-        cells = [cell for cell in cells if cell is not None] # Ejects cells that do not exist
+                if x == 0 and y == 0: 
+                    continue # Skips appending self to list of neighbours
+                cell = self.get_cell_by_axis(self.row - y, self.row_index - x)
+                if cell is not None:
+                    cells.append(cell)
         return cells
     
-    def left_click_actions(self, event): 
+    def left_click_actions(self): 
         if self.is_mine:
             self.show_mine()
         else:
@@ -54,14 +62,18 @@ class Cell:
                     cell_obj.show_cell() # Revealing all neighbours if cell-mine adjacency == 0
             
             if Cell.cell_count == settings.MINES_COUNT: # Invoke win message 
-                print("Win")
+                Cell.IsWin = True
+                Cell.wins += 1
+                print("Won")
             
 
-    def show_cell(self): # Graphical representation when cell is revealed
-        if not self.is_opened: # self.is_opened turns to true, meaning the cell is revealed
-            pass
+    # def show_cell(self): # Representation when cell is revealed
+    #     if not self.is_opened: # self.is_opened turns to true, meaning the cell is revealed
+    #         pass
 
     def show_mine(self): # Lose situation, clicked on mine
+        Cell.IsLose = True
+        Cell.losses += 1
         print("Clicked on mine")
 
     def right_click_actions(self): # Flagging cells, user input
@@ -72,10 +84,14 @@ class Cell:
     
     @staticmethod
     def randomise_mines(): # Choosing the set of mines from the set of cells
+        initialClick = []
+        for cell in Cell.all:
+            if cell.is_opened == True:
+                initialClick.append(cell)
         picked_cells = random.sample(
-            Cell.all, settings.MINES_COUNT
+            [cell for cell in Cell.all if cell not in initialClick], settings.MINES_COUNT
         )
     
     def __repr__(self):
-        return f"Cell({self.row_index}, {self.row})" # Returns the position of the cell instance when the instance is called
+        return f"Cell({self.row}, {self.row_index})" # Returns the position of the cell instance when the instance is called
     

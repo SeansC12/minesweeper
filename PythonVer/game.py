@@ -14,13 +14,13 @@ Plan to run game each iteration, need to include solver function from solver.py
 '''
 def game():
     # Initialise game state
-    game_is_ongoing = True
+    Cell.game_is_ongoing = True
+    Cell.isWin = False
+    Cell.isLose = False
     iterations = settings.ITERATIONS
     clicks = 0
 
-    initialiseBoard()
-
-    while game_is_ongoing:
+    while Cell.game_is_ongoing == True:
         if clicks == 1:
             Cell.randomise_mines()
         if Cell.isWin == True:

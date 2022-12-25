@@ -13,6 +13,7 @@ class Cell:
     isLose = False
     wins = 0
     losses = 0
+    game_is_ongoing = False
     currentIteration = 1
     def __init__(self, row, row_index, is_mine=False, unsafe_revealed=False):
         self.is_mine = is_mine
@@ -54,18 +55,22 @@ class Cell:
         return cells
     
     def left_click_actions(self): 
+        self.is_opened = True
         if self.is_mine:
             self.show_mine()
         else:
             if self.surrounded_cells_mines_length == 0:
-                for cell_obj in self.surrounded_cells:
-                    cell_obj.show_cell() # Revealing all neighbours if cell-mine adjacency == 0
+                cells_to_open = [cell_obj for cell_obj in self.surrounded_cells if cell_obj.is_opened == False]
+                for cell_obj in cells_to_open:
+                    cell_obj.is_opened = True # Revealing all neighbours if cell-mine adjacency == 0
             
-            if Cell.cell_count == settings.MINES_COUNT: # Invoke win message 
+            opened_cells_count = sum(1 for cell in Cell.all if cell.is_opened)
+
+            if opened_cells_count == settings.MINES_COUNT: # Invoke win message 
                 Cell.IsWin = True
                 Cell.wins += 1
                 print("Won")
-            
+        
 
     # def show_cell(self): # Representation when cell is revealed
     #     if not self.is_opened: # self.is_opened turns to true, meaning the cell is revealed

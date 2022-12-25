@@ -55,7 +55,7 @@ def solver():
     random.choice(Cell.all).left_click_actions()
 
     while Cell.game_is_ongoing:
-        pass
+        pass # Incomplete
 
 
 

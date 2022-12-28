@@ -1,64 +1,42 @@
-from cell import Cell
-import settings
-import game
-import random
-from typing import List
 import numpy as np
+import random
+from cell import Cell
 
-'''
-1. Run click
-2. Get board state
-3. Assign variables
-4. Solve system of equations
-5. Repeat
-'''
+class MinesweeperSolver:
+    def __init__(self, board):
+        self.board = board
+        self.unknown_cells = [c for c in self.board if not c.is_opened]
 
-def getBoardState(cellAll: List[Cell]):
-    known = []
-    for cell in cellAll:
-        if cell.is_opened == True:
-            known.append(cell)
-    return known
+    def solve(self):
+        coefficient_matrix = [] # Matrix with the unknown cells
+        result_vector = [] # Mine-values of the known cells
 
-def algo():
+        for cell in self.board:
+                
+            if cell.is_opened:
+                unknown_cells = [c for c in cell.surrounded_cells if c.is_opened == False]
 
-    known = getBoardState(Cell.all)
-
-    all_neighbour_unknown = set([])
-
-    coefficient_map = {}
-
-    coefficient_set = []
-
-    result_vector = []
-
-    for cell in known:
-        coefficient_map[cell] = []
-        for neighbour in cell.surrounded_cells:
-            if neighbour.is_opened == False: 
-                all_neighbour_unknown.add(neighbour)
-
-        for ref in all_neighbour_unknown:
-            if ref in cell.surrounded_cells:
-                coefficient_map[cell].append(1) # Add coefficient if the unknown is in the cell neighbour unknowns
-            elif ref not in cell.surrounded_cells:
-                coefficient_map[cell].append(0) # No coefficient if not
+                if not unknown_cells:
+                    continue
         
-    for boundary in coefficient_map:
-        result_vector.append(boundary.surrounded_mines_length)
-        coefficient_set.append(coefficient_map[boundary])
-    
-    return np.linalg.solve(np.array(coefficient_set), np.array(result_vector))
- 
-def solver():
-    game.initialiseBoard()
-    random.choice(Cell.all).left_click_actions()
+                coefficients = [1 if c in unknown_cells else 0 for c in self.unknown_cells] # If the unknown cell is within the neighbourhood, have a 1 coefficient and 0 otherwise.
+                coefficient_matrix.append(coefficients)
 
-    while Cell.game_is_ongoing:
-        pass # Incomplete
+                result_vector.append(cell.surrounded_cells_mines_length) 
+        
+        try:
+            solution = np.linalg.solve(coefficient_matrix, result_vector)
+        except np.linalg.LinAlgError:
+            return False
+        
+        if not all(x == 0 or x == 1 for x in solution):
+            for i, cell in enumerate(self.unknown_cells):
+                cell.flagged = bool(solution[i])
+            
+            for cell in self.unknown_cells:
+                if cell.flagged == False:
+                    cell.is_opened = True
+
+        return True
 
 
-
-    
-
-solver()

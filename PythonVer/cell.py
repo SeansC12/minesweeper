@@ -15,6 +15,7 @@ class Cell:
     losses = 0
     game_is_ongoing = False
     currentIteration = 1
+    clicks = 0
     def __init__(self, row, row_index, is_mine=False, unsafe_revealed=False):
         self.is_mine = is_mine
         self.is_opened = False
@@ -55,6 +56,7 @@ class Cell:
         return cells
     
     def left_click_actions(self): 
+        self.clicks += 1
         self.is_opened = True
         if self.is_mine:
             self.show_mine()
@@ -98,5 +100,5 @@ class Cell:
         )
     
     def __repr__(self):
-        return f"Cell({self.row}, {self.row_index})" # Returns the position of the cell instance when the instance is called
+        return f"Cell({self.row}, {self.row_index}, {self.is_opened}, {self.is_mine})" # Returns the position of the cell instance when the instance is called
     

@@ -10,6 +10,54 @@ def initialiseBoard(): # Initialise board arrangement
         board.append([])
         for col in range(settings.ROW_COUNT):
             board[row].append(Cell(row, col))
+    
+    # Initialise the board with mines
+    # Flatten the array board
+    flattened_board = [inner for c in board for inner in c]
+    selected_bombs = random.sample(flattened_board, int(settings.MINE_DENSITY * float((settings.ROW_COUNT ** 2))))
+
+    # Make each cell know that they are a bomb
+    for cell in selected_bombs:
+        cell.is_mine = True
+    
+    # Make each cell know how many bombs are around it
+    for row, x in enumerate(board):
+        for col, current_cell in enumerate(x):
+            # If cell is a bomb
+            if current_cell.is_mine:
+                continue
+
+            # Cell is not a bomb
+            # Check for upper row
+            for i in range(-1, 2):
+                try:
+                    cell_to_check = board[row - 1][col + i]
+                except IndexError:
+                    continue
+
+                if cell_to_check.is_mine:
+                    current_cell.mines_around += 1
+            
+            # Check for same row
+            for i in range(-1, 2):
+                try:
+                    cell_to_check = board[row][col + i]
+                except IndexError:
+                    continue
+
+                if cell_to_check.is_mine:
+                    current_cell.mines_around += 1
+            
+            # Check for row below
+            for i in range(-1, 2):
+                try:
+                    cell_to_check = board[row ][col + i]
+                except IndexError:
+                    continue
+
+                if cell_to_check.is_mine:
+                    current_cell.mines_around += 1
+
     return board
 
 '''

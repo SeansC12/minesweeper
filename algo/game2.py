@@ -14,7 +14,7 @@ class Board:
         flattened_board = [inner for c in self.board for inner in c] 
         mines = random.sample([c for c in flattened_board if c.is_opened == True], self.mines)
         for cell in mines:
-            cell.is_mine == True
+            cell.is_mine = True
 
     def get_surroundings(self, row: int, col: int) -> List[Cell]:
         surroundings = []

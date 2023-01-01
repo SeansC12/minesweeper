@@ -14,10 +14,4 @@ class Cell:
         self.mines_around = mines_around
         self.flagged = False
 
-    def open_cell(self):
-        self.is_opened = True
-        return self.is_mine
-    
-    def flag_cell(self):
-        self.flagged = True
     

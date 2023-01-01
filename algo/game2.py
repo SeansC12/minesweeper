@@ -2,7 +2,6 @@ from cell import Cell
 import random
 from typing import List
 import random
-import settings
 
 class Board: 
     def __init__(self, rows: int, cols: int, mines: int):
@@ -47,4 +46,9 @@ class Board:
 
     def get_unopened_cells(self) -> List[Cell]:
         return [cell for row in self.board for cell in row if cell.is_opened == False]
+
+    def flag(self, row: int, col: int):
+        cell = self.board[row][col]
+        cell.flagged = True
+
         

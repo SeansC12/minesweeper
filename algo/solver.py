@@ -3,8 +3,6 @@ import random
 from cell import Cell
 import settings
 
-
-
 def MinesweeperSolver(board):
     # Initialise the board with mines
     # Flatten the array board

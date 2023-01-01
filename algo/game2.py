@@ -36,7 +36,15 @@ class Board:
 
                 cell.mines_around = sum(c.is_mine for c in surroundings)
 
+    def open_cell(self, row: int, col: int) -> int:
 
+        cell = self.board[row][col]
+        cell.is_opened = True
+        return cell.mines_around
 
+    def get_opened_cells(self) -> List[Cell]:
+        return [cell for row in self.board for cell in row if cell.is_opened == True]
 
+    def get_unopened_cells(self) -> List[Cell]:
+        return [cell for row in self.board for cell in row if cell.is_opened == False]
         

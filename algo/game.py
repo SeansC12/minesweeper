@@ -23,40 +23,22 @@ def initialiseBoard(): # Initialise board arrangement
     # Make each cell know how many bombs are around it
     for row, x in enumerate(board):
         for col, current_cell in enumerate(x):
+            surroundings = list()
             # If cell is a bomb
             if current_cell.is_mine:
                 continue
-
-            # Cell is not a bomb
-            # Check for upper row
-            for i in range(-1, 2):
-                try:
-                    cell_to_check = board[row - 1][col + i]
-                except IndexError:
-                    continue
-
-                if cell_to_check.is_mine:
-                    current_cell.mines_around += 1
             
-            # Check for same row
             for i in range(-1, 2):
-                try:
-                    cell_to_check = board[row][col + i]
-                except IndexError:
-                    continue
-
-                if cell_to_check.is_mine:
-                    current_cell.mines_around += 1
+                for j in range(-1, 2):
+                    if i == 0 and j == 0:
+                        continue
+                    
+                    try:
+                        surroundings.append(board[row + i][col + j])
+                    except IndexError:
+                        continue
             
-            # Check for row below
-            for i in range(-1, 2):
-                try:
-                    cell_to_check = board[row ][col + i]
-                except IndexError:
-                    continue
-
-                if cell_to_check.is_mine:
-                    current_cell.mines_around += 1
+            current_cell.mines_around = sum(c.is_mine for c in surroundings)
 
     return board
 
@@ -88,6 +70,3 @@ lose_rate = loss_count / (win_count + loss_count)
 
 # print(f"Win rate: {win_rate}")
 # print(f"Lose rate: {lose_rate}")
-
-# board = initialiseBoard()
-# play_game(board)

@@ -22,7 +22,7 @@ class Board:
             for j in [-1, 0, 1]:
                 if i == j == 0:
                     continue
-                surroundings.append(self.board[i][j])
+                surroundings.append(self.board[row - i][row - j])
         return surroundings
 
     def get_mine_value(self):

@@ -1,9 +1,7 @@
-import random
-import settings
-
-# TODO: Add class method for win-lose
-# TODO: Code for instantiating the game
-# TODO: Implement solver for game   
+class BombError(Exception):
+    def __init__(self, message='You just hit a bomb'):
+        # Call the base class constructor with the parameters it needs
+        super(BombError, self).__init__(message) 
 
 class Cell:
     def __init__(self, row, column, is_mine=False, mines_around=0):
@@ -16,7 +14,8 @@ class Cell:
 
     def open_cell(self):
         self.is_opened = True
-        return self.is_mine
+        if self.is_mine:
+            raise BombError()
     
     def flag_cell(self):
         self.flagged = True

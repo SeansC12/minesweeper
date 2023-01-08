@@ -4,6 +4,11 @@ import sys
 import random
 from solver import MinesweeperSolver
 
+class BombError(Exception):
+    def __init__(self, message='You just hit a bomb'):
+        # Call the base class constructor with the parameters it needs
+        super(BombError, self).__init__(message) 
+
 def initialiseBoard(): # Initialise board arrangement
     board = list()
     for row in range(settings.ROW_COUNT): # settings.ROW_COUNT = 5
@@ -46,8 +51,11 @@ def initialiseBoard(): # Initialise board arrangement
 Plan to run game each iteration, need to include solver function from solver.py
 '''
 def play_game(board):
-    solver = MinesweeperSolver(board)
-    return solver
+    try:
+        MinesweeperSolver(board)
+        return True
+    except BombError:
+        return False
     # True is win, False is lost
 
 def play_games(num_games):
@@ -68,5 +76,5 @@ win_count, loss_count = play_games(100)
 win_rate = win_count / (win_count + loss_count)
 lose_rate = loss_count / (win_count + loss_count)
 
-# print(f"Win rate: {win_rate}")
-# print(f"Lose rate: {lose_rate}")
+print(f"Win rate: {win_rate}")
+print(f"Lose rate: {lose_rate}")

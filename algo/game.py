@@ -54,7 +54,7 @@ def play_game(board):
     try:
         MinesweeperSolver(board)
         return True
-    except BombError:
+    except:
         return False
     # True is win, False is lost
 
